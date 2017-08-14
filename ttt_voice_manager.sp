@@ -11,17 +11,17 @@
 
 public Plugin myinfo =
 {
-  name = "TTT - Voice Manager"
-  author = "good_live"
-  description = "An overall system to manage the voice flags in TTT"
-  version = "0.1"
+  name = "TTT - Voice Manager",
+  author = "good_live",
+  description = "An overall system to manage the voice flags in TTT",
+  version = "0.1",
   url = "painlessgaming.eu"
 };
 
 enum VoiceHandler {
   iPriority,
   Handle:hPlugin,
-  ListenOverride:iVoiceMap[MAXPLAYERS+1][MAXPLAYERS+1]
+  ListenOverride:iVoiceMap[MAXPLAYERS*2+2]
 }
 
 ArrayList g_aHandlers;
@@ -45,11 +45,11 @@ public void OnClientDisconnect(int client)
   int tempHandler[VoiceHandler];
   for(int i = 0; i < g_aHandlers.Length; i++)
   {
-    g_aHandlers.GetArray(i, tempHandler[0], HANDLER_SIZE)
+    g_aHandlers.GetArray(i, tempHandler[0], HANDLER_SIZE);
     for(int j = 1; j <= MaxClients; j++)
     {
-      tempHandler[iVoiceMap][client][j] = Listen_Default;
-      tempHandler[iVoiceMap][j][client] = Listen_Default;
+      tempHandler[iVoiceMap][(MAXPLAYERS+1)*client+j] = Listen_Default;
+      tempHandler[iVoiceMap][(MAXPLAYERS+1)*j+client] = Listen_Default;
     }
     g_aHandlers.SetArray(i, tempHandler[0], HANDLER_SIZE);
   }
@@ -60,7 +60,7 @@ public int Native_RegisterVoiceHandler(Handle plugin, int numParams)
   int tempHandler[VoiceHandler];
   for(int i = 0; i < g_aHandlers.Length; i++)
   {
-    g_aHandlers.GetArray(i, tempHandler[0], HANDLER_SIZE)
+    g_aHandlers.GetArray(i, tempHandler[0], HANDLER_SIZE);
 
     //Currently only one Handler per Plugin
     if(tempHandler[hPlugin] == plugin)
@@ -68,30 +68,30 @@ public int Native_RegisterVoiceHandler(Handle plugin, int numParams)
   }
 
   int priority = GetNativeCell(1);
-  Handler[VoiceHandler];
+  int Handler[VoiceHandler];
   Handler[iPriority] = priority;
-  Handler[hPlugin] == plugin;
+  Handler[hPlugin] = plugin;
   g_aHandlers.PushArray(Handler[0], HANDLER_SIZE);
-  SortADTArrayCustom(g_aHandlers, Handler_Comparator)
+  SortADTArrayCustom(g_aHandlers, Handler_Comparator);
+  return 0;
 }
+
 public int Handler_Comparator(int i, int j, Handle array, Handle hndl)
 {
 	int temp_item[VoiceHandler];
 	int temp_item2[VoiceHandler];
 
-	array.GetArray(i, temp_item[0]);
-	array.GetArray(j, temp_item2[0]);
+	GetArrayArray(array, i, temp_item[0]);
+	GetArrayArray(array, j, temp_item2[0]);
 
-  return temp_item[iPriority] - temp_item2[iPriority];
-
-	return 0;
+  	return temp_item[iPriority] - temp_item2[iPriority];
 }
 
 public int Native_SetListenOverride(Handle plugin, int numParams)
 {
   int client = GetNativeCell(1);
   int target = GetNativeCell(2);
-  int flag = GetNativeCell(3);
+  ListenOverride flag = GetNativeCell(3);
 
   int tempHandler[VoiceHandler];
   for(int i = 0; i < g_aHandlers.Length; i++)
@@ -102,9 +102,9 @@ public int Native_SetListenOverride(Handle plugin, int numParams)
     if(tempHandler[hPlugin] == plugin)
     {
       //This is no change
-      if(tempHandler[iVoiceMap][client][target] == flag)
+      if(tempHandler[iVoiceMap][(MAXPLAYERS+1)*client+target] == flag)
         return 0;
-      tempHandler[iVoiceMap][client][target] = flag;
+      tempHandler[iVoiceMap][(MAXPLAYERS+1)*client+target] = flag;
       int tempHandler2[VoiceHandler];
       if(flag == Listen_Default)
       {
@@ -112,9 +112,9 @@ public int Native_SetListenOverride(Handle plugin, int numParams)
         for(int j = i-1; j >= 0; j--)
         {
           g_aHandlers.GetArray(j, tempHandler2[0], HANDLER_SIZE);
-          if(tempHandler2[iVoiceMap][client][target] != Listen_Default)
+          if(tempHandler2[iVoiceMap][(MAXPLAYERS+1)*client+target] != Listen_Default)
           {
-            SetListenOverride(client, target, tempHandler2[iVoiceMap][client][target]);
+            SetListenOverride(client, target, view_as<ListenOverride>(tempHandler2[(MAXPLAYERS+1)*client+target]));
             return 0;
           }
         }
@@ -123,11 +123,11 @@ public int Native_SetListenOverride(Handle plugin, int numParams)
         for(int j = i+1; j < g_aHandlers.Length; j++)
         {
           g_aHandlers.GetArray(j, tempHandler2[0], HANDLER_SIZE);
-          if(tempHandler2[iVoiceMap][client][target] != Listen_Default)
+          if(tempHandler2[iVoiceMap][(MAXPLAYERS+1)*client+target] != Listen_Default)
             return 0;
         }
       }
-      SetListenOverride(client, target, tempHandler[iVoiceMap][client][target]);
+      SetListenOverride(client, target, tempHandler[iVoiceMap][(MAXPLAYERS+1)*client+target]);
       break;
     }
   }
