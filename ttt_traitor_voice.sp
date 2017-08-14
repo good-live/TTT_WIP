@@ -22,13 +22,16 @@ public void OnPluginStart()
 }
 
 public void OnAllPluginsLoaded()
-{
-	//lowest priority
-	TTT_RegisterVoiceHandler(1);
-	
+{	
 	HookEvent("player_death", Event_PlayerDeath);
 	
 	RegConsoleCmd("sm_tvoice", CMD_TVOICE);
+}
+
+public void OnAllPluginsLoaded()
+{
+	//lowest priority
+	TTT_RegisterVoiceHandler(1);
 }
 
 public Action CMD_TVOICE(int client, int args)
