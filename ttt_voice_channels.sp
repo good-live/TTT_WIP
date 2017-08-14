@@ -18,10 +18,7 @@ int g_iPlayerChannel[MAXPLAYERS + 1] =  { -1, ... };
 int g_iChannelCount;
 
 public void OnPluginStart()
-{
-	//High priority
-	TTT_RegisterVoiceHandler(3);
-	
+{	
 	RegAdminCmd("sm_vcreate", CMD_VCREATE, ADMFLAG_GENERIC);
 	RegAdminCmd("sm_vclose", CMD_VCLOSE, ADMFLAG_GENERIC);
 	RegAdminCmd("sm_vadd", CMD_VADD, ADMFLAG_GENERIC);
@@ -29,6 +26,12 @@ public void OnPluginStart()
 	RegAdminCmd("sm_vkick", CMD_VKICK, ADMFLAG_GENERIC);
 	
 	LoadTranslations("common.phrases");
+}
+
+public void OnAllPluginsLoaded()
+{
+	//High priority
+	TTT_RegisterVoiceHandler(3);
 }
 
 public Action CMD_VCREATE(int client, int args)
