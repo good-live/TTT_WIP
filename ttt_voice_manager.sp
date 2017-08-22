@@ -7,7 +7,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define HANDLER_SIZE MAXPLAYERS*2+4
+#define HANDLER_SIZE (MAXPLAYERS+1)*(MAXPLAYERS+1)+2
 
 public Plugin myinfo =
 {
@@ -21,7 +21,7 @@ public Plugin myinfo =
 enum VoiceHandler {
   iPriority,
   Handle:hPlugin,
-  ListenOverride:iVoiceMap[MAXPLAYERS*2+2]
+  ListenOverride:iVoiceMap[(MAXPLAYERS+1)*(MAXPLAYERS+1)+2]
 }
 
 ArrayList g_aHandlers;

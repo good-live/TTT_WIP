@@ -19,11 +19,6 @@ bool g_bTVoice[MAXPLAYERS + 1];
 public void OnPluginStart()
 {
 	HookEvent("player_death", Event_PlayerDeath);
-}
-
-public void OnAllPluginsLoaded()
-{	
-	HookEvent("player_death", Event_PlayerDeath);
 	
 	RegConsoleCmd("sm_tvoice", CMD_TVOICE);
 }

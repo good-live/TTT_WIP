@@ -26,6 +26,7 @@ public void OnPluginStart()
 	RegAdminCmd("sm_vkick", CMD_VKICK, ADMFLAG_GENERIC);
 	
 	LoadTranslations("common.phrases");
+	LoadTranslations("voice_channels.phrases");
 }
 
 public void OnAllPluginsLoaded()
