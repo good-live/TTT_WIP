@@ -50,6 +50,11 @@ public void OnClientDisconnect(int client)
     {
       tempHandler[iVoiceMap][(MAXPLAYERS+1)*client+j] = Listen_Default;
       tempHandler[iVoiceMap][(MAXPLAYERS+1)*j+client] = Listen_Default;
+      if(IsClientConnected(j))
+      {
+      	PrintToChat(j, "You can hear %N now (DEFAULT)", client);
+      	PrintToChat(client, "You can hear %i now (DEFAULT)", j);
+      }
     }
     g_aHandlers.SetArray(i, tempHandler[0], HANDLER_SIZE);
   }
@@ -115,6 +120,7 @@ public int Native_SetListenOverride(Handle plugin, int numParams)
           if(tempHandler2[iVoiceMap][(MAXPLAYERS+1)*client+target] != Listen_Default)
           {
             SetListenOverride(client, target, view_as<ListenOverride>(tempHandler2[(MAXPLAYERS+1)*client+target]));
+	    PrintToChat(client, "Setting your listening flag for %i to %i", target, tempHandler2[(MAXPLAYERS + 1) * client + target]);
             return 0;
           }
         }
@@ -128,6 +134,7 @@ public int Native_SetListenOverride(Handle plugin, int numParams)
         }
       }
       SetListenOverride(client, target, tempHandler[iVoiceMap][(MAXPLAYERS+1)*client+target]);
+      PrintToChat(client, "Setting your listening flag for %i to %i", target, tempHandler[(MAXPLAYERS + 1) * client + target]);
       break;
     }
   }
