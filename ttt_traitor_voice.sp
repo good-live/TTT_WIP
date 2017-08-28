@@ -20,6 +20,8 @@ public void OnPluginStart()
 {
 	HookEvent("player_death", Event_PlayerDeath);
 	
+	LoadTranslations("ttt_traitor_voice.phrases");
+	
 	RegConsoleCmd("sm_tvoice", CMD_TVOICE);
 }
 
@@ -59,10 +61,10 @@ public Action CMD_TVOICE(int client, int args)
 		CReplyToCommand(client, "%t%t", "TAG", "TTT_VOICE_JOIN");
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			if (!TTT_IsClientValid(i) || !IsPlayerAlive(i) || TTT_GetClientRole(i) != TTT_TEAM_TRAITOR)
+			if (!TTT_IsClientValid(i) || !IsPlayerAlive(i) || TTT_GetClientRole(i) == TTT_TEAM_TRAITOR)
 				continue;
-			//He can be heard by other alive traitos
-			TTT_SetListenOverride(client, i, Listen_Yes);
+			//He can't be heard by other alive people other than traitor
+			TTT_SetListenOverride(i, client, Listen_No);
 		}
 	}
 	return Plugin_Handled;

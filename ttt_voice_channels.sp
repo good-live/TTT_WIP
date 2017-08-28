@@ -91,6 +91,22 @@ public Action CMD_VLEAVE(int client, int args)
 	return Plugin_Handled;
 }
 
+public void OnClientPostAdminCheck(int client)
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if(!IsClientConnected(i))
+			continue;
+		if(g_iPlayerChannel[i] != -1)
+		{
+			TTT_SetListenOverride(client, i, Listen_No);
+			TTT_SetListenOverride(i, client, Listen_No);
+			
+			PrintToChatAll("Client %N and %N can't hear each other", client, i);
+		}
+	}
+}
+
 public Action CMD_VKICK(int client, int args)
 {
 	if (args < 1)
@@ -165,12 +181,14 @@ void AddClientToChannel(int channel, int client)
 	g_iPlayerChannel[client] = channel;
 	for (int i = 1; i <= MaxClients; i++)
 	{
-		if (i == client)
+		if (i == client || !IsClientConnected(i))
 			continue;
 		if (g_iPlayerChannel[client] != channel)
 		{
 			TTT_SetListenOverride(client, i, Listen_No);
 			TTT_SetListenOverride(i, client, Listen_No);
+			
+			PrintToChatAll("Client %N and %N can't hear each other", client, i);
 			
 			if (oldChannel == g_iPlayerChannel[client])
 				CPrintToChat(i, "%t%t", "TAG", "CLIENT_LEFT_YOUR_CHANNEL", client);
